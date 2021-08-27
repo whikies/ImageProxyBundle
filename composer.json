@@ -1,0 +1,24 @@
+{
+    "authors": [
+        {
+            "email": "roberj2708@gmail.com",
+            "name": "Roberto Guillén Rodríguez"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Rjd\\ImageProxyBundle\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "description": "Encripta y desencripta las url de las imágenes que se conectan con un proxy de imágenes",
+    "license": "MIT",
+    "name": "rjd/image-proxy-bundle",
+    "require": {
+        "league/uri": "^6.4",
+        "league/uri-components": "^2.4"
+    },
+    "type": "symfony-bundle"
+}

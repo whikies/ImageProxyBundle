@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults autowire="true" autoconfigure="true" public="false" />
+        <prototype namespace="Rjd\ImageProxyBundle\" resource="../../../src/*" exclude="../../../src/{DependencyInjection}" />
+
+        <service id="Rjd\ImageProxyBundle\Service\ImageProxyService">
+            <argument key="$urlBase">%rjd_image_proxy.url_base%</argument>
+            <argument key="$encrypt">%rjd_image_proxy.encrypt.enabled%</argument>
+            <argument key="$hash">%rjd_image_proxy.encrypt.hash%</argument>
+        </service>
+    </services>
+</container>
