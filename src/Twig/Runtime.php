@@ -50,6 +50,11 @@ class Runtime implements RuntimeExtensionInterface
         return $this->imageProxyService->generateUrlOffersLarge($ur);
     }
 
+    public function imageProxyUrlOffersFull(string $url): ?string
+    {
+        return $this->imageProxyService->imageProxyUrlOffersFull($ur);
+    }
+
     public function imageProxyEncrypt(string $value): ?string
     {
         return $this->imageProxyService->encrypt($value);

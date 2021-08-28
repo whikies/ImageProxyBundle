@@ -132,7 +132,7 @@ class ImageProxyService implements ImageProxyServiceInterface
     }
 
     /**
-     * Genera una url pequeña y encriptada de una oferta
+     * Genera una url medio y encriptada de una oferta
      *
      * @param string $url
      *
@@ -144,7 +144,7 @@ class ImageProxyService implements ImageProxyServiceInterface
     }
 
     /**
-     * Genera una url pequeña y encriptada de una oferta
+     * Genera una url grande y encriptada de una oferta
      *
      * @param string $url
      *
@@ -153,6 +153,18 @@ class ImageProxyService implements ImageProxyServiceInterface
     public function generateUrlOffersLarge(string $url): ?string
     {
         return $this->generateUrlImages($url, 'offers/large');
+    }
+
+    /**
+     * Genera una url a tamaño completo y encriptada de una oferta
+     *
+     * @param string $url
+     *
+     * @return string|null
+     */
+    public function generateUrlOffersFull(string $url): ?string
+    {
+        return $this->generateUrlImages($url, 'offers/full');
     }
 
     /**
