@@ -10,8 +10,15 @@
 
         <service id="Rjd\ImageProxyBundle\Service\ImageProxyService">
             <argument key="$urlBase">%rjd_image_proxy.url_base%</argument>
-            <argument key="$encrypt">%rjd_image_proxy.encrypt.enabled%</argument>
             <argument key="$hash">%rjd_image_proxy.encrypt.hash%</argument>
+        </service>
+
+        <service id="Rjd\ImageProxyBundle\Twig\Extension">
+            <tag name="twig.extension" />
+        </service>
+
+        <service id="Rjd\ImageProxyBundle\Twig\Runtime">
+            <tag name="twig.runtime" />
         </service>
     </services>
 </container>

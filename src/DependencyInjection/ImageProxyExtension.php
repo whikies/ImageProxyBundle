@@ -25,7 +25,6 @@ class ImageProxyExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('rjd_image_proxy.url_base', $config['url_base']);
-        $container->setParameter('rjd_image_proxy.encrypt.enabled', $config['encrypt']['enabled']);
         $container->setParameter('rjd_image_proxy.encrypt.hash', $config['encrypt']['hash'] ?? '');
     }
 }

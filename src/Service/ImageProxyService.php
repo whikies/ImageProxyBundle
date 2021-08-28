@@ -17,24 +17,17 @@ class ImageProxyService implements ImageProxyServiceInterface
     private string $urlBase;
 
     /**
-     * @var bool
-     */
-    private bool $encrypt;
-
-    /**
      * @var string
      */
     private string $hash;
 
     /**
      * @param string $urlBase
-     * @param bool $encrypt
      * @param string $hash
      */
-    public function __construct(string $urlBase, bool $encrypt = false, string $hash = '')
+    public function __construct(string $urlBase, string $hash = '')
     {
         $this->urlBase = $urlBase;
-        $this->encrypt = $encrypt;
         $this->hash = $hash;
     }
 
@@ -46,31 +39,48 @@ class ImageProxyService implements ImageProxyServiceInterface
      *
      * @return string|null
      */
-    public function generateUrl(string $url, array $params = [], string $path = null): ?string
+    public function generateBasicUrl(string $url, array $params = [], bool $encrypt = false): ?string
+    {
+        if (empty($url) || empty($this->urlBase)) {
+            return null;
+        }
+
+        $params['url'] = $encrypt ? $this->encrypt($url) : $url;
+
+        $url = sprintf(
+            '%s/img',
+            rtrim($this->urlBase, '/')
+        );
+
+        $query = http_build_query($params);
+        $url .= '?' . $query;
+
+        return $url;
+    }
+
+    /**
+     * Genera la url de una imagen para conectar con el proxy
+     *
+     * @param string $url
+     * @param array $params
+     *
+     * @return string|null
+     */
+    public function generateUrl(string $url, array $params = []): ?string
     {
         if (empty($url) || empty($this->urlBase)) {
             return null;
         }
 
         $uri = Http::createFromString($url);
-
-        dump($uri);
-        return null;
         $hierarchicalPath = new HierarchicalPath($uri->getPath());
 
-        $u = '';
-        $u .= isset($url['scheme']) && $url['scheme'] == 'https' ? 'ssl:' : '';
-        $u .= isset($url['host']) ? $url['host'] : '';
-        $u .= isset($url['path']) ? $url['path'] : '';
-        $u .= isset($url['query']) ? '?' . $url['query'] : '';
-
-        $url = sprintf('%s%s%s', rtrim($this->urlBase, '/'), $path, urlencode($this->encrypt($u)));
-
-        // if (!empty($info["extension"]) && 8 > strlen($info["extension"]) && strripos('?', $info["extension"]) === false) {
-        //     $url .= '.' . $info["extension"];
-        // } else {
-        //     $url .= '.jpeg';
-        // }
+        $url = sprintf(
+            '%s/img/%s.%s',
+            rtrim($this->urlBase, '/'),
+            urlencode($this->encrypt($url)),
+            $hierarchicalPath->getExtension() ?? 'png'
+        );
 
         if ($params) {
             $query = http_build_query($params);
@@ -78,6 +88,71 @@ class ImageProxyService implements ImageProxyServiceInterface
         }
 
         return $url;
+    }
+
+    /**
+     * Genera una url encriptada con un path
+     *
+     * @param string $url
+     * @param string $path
+     *
+     * @return string|null
+     */
+    public function generateUrlImages(string $url, string $path): ?string
+    {
+        if (empty($url) || empty($this->urlBase)) {
+            return null;
+        }
+
+        $uri = Http::createFromString($url);
+        $hierarchicalPath = new HierarchicalPath($uri->getPath());
+        $pathParams = '';
+
+        $url = sprintf(
+            '%s/%s%s.%s',
+            rtrim($this->urlBase, '/'),
+            $path ? $path . '/' : '',
+            urlencode($this->encrypt($url)),
+            $hierarchicalPath->getExtension() ?? 'png'
+        );
+
+        return $url;
+    }
+
+    /**
+     * Genera una url pequeña y encriptada de una oferta
+     *
+     * @param string $url
+     *
+     * @return string|null
+     */
+    public function generateUrlOffersSmall(string $url): ?string
+    {
+        return $this->generateUrlImages($url, 'offers/small');
+    }
+
+    /**
+     * Genera una url pequeña y encriptada de una oferta
+     *
+     * @param string $url
+     *
+     * @return string|null
+     */
+    public function generateUrlOffersMedium(string $url): ?string
+    {
+        return $this->generateUrlImages($url, 'offers/medium');
+    }
+
+    /**
+     * Genera una url pequeña y encriptada de una oferta
+     *
+     * @param string $url
+     *
+     * @return string|null
+     */
+    public function generateUrlOffersLarge(string $url): ?string
+    {
+        return $this->generateUrlImages($url, 'offers/large');
     }
 
     /**
@@ -90,7 +165,7 @@ class ImageProxyService implements ImageProxyServiceInterface
     public function encrypt(string $value): ?string
     {
         $key = substr(md5($this->hash), 0, 16);
-        $iv  = substr(md5($key . $key), 0, 16);
+        $iv = substr(md5($key . $key), 0, 16);
         $value = @serialize($value);
         $encrypted = @base64_encode(@openssl_encrypt($value, static::ENCRYPT_METHOD, $key, static::ENCRYPT_OPTIONS, $iv));
 
@@ -98,7 +173,7 @@ class ImageProxyService implements ImageProxyServiceInterface
     }
 
     /**
-     * Descripta una cadena de texto
+     * Desencripta una cadena de texto
      *
      * @param string $value
      *

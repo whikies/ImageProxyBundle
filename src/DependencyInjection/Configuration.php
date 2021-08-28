@@ -24,7 +24,6 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('url_base')->isRequired()->end()
                 ->arrayNode('encrypt')
-                    ->canBeEnabled()
                     ->children()
                         ->scalarNode('hash')->isRequired()->end()
                     ->end()
