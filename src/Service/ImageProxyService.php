@@ -140,6 +140,18 @@ class ImageProxyService implements ImageProxyServiceInterface
      *
      * @return string|null
      */
+    public function imageProxyUrlOffersFull(string $url): ?string
+    {
+        return $this->generateUrlImages($url, 'offers/full');
+    }
+
+    /**
+     * Genera una url pequeña y encriptada de una oferta
+     *
+     * @param string $url
+     *
+     * @return string|null
+     */
     public function generateUrlOffersMedium(string $url): ?string
     {
         return $this->generateUrlImages($url, 'offers/medium');
