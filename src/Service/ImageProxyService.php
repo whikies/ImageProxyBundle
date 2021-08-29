@@ -74,12 +74,13 @@ class ImageProxyService implements ImageProxyServiceInterface
 
         $uri = Http::createFromString($url);
         $hierarchicalPath = new HierarchicalPath($uri->getPath());
+        $url = $this->normalizeScheme($url);
 
         $url = sprintf(
             '%s/img/%s.%s',
             rtrim($this->urlBase, '/'),
             urlencode($this->encrypt($url)),
-            $hierarchicalPath->getExtension() ?? 'png'
+            $hierarchicalPath->getExtension() ? $hierarchicalPath->getExtension() : 'png'
         );
 
         if ($params) {
@@ -106,6 +107,7 @@ class ImageProxyService implements ImageProxyServiceInterface
 
         $uri = Http::createFromString($url);
         $hierarchicalPath = new HierarchicalPath($uri->getPath());
+        $url = $this->normalizeScheme($url);
         $pathParams = '';
 
         $url = sprintf(
@@ -113,7 +115,7 @@ class ImageProxyService implements ImageProxyServiceInterface
             rtrim($this->urlBase, '/'),
             $path ? $path . '/' : '',
             urlencode($this->encrypt($url)),
-            $hierarchicalPath->getExtension() ?? 'png'
+            $hierarchicalPath->getExtension() ? $hierarchicalPath->getExtension() : 'png'
         );
 
         return $url;
@@ -132,7 +134,7 @@ class ImageProxyService implements ImageProxyServiceInterface
     }
 
     /**
-     * Genera una url medio y encriptada de una oferta
+     * Genera una url pequeña y encriptada de una oferta
      *
      * @param string $url
      *
@@ -144,7 +146,7 @@ class ImageProxyService implements ImageProxyServiceInterface
     }
 
     /**
-     * Genera una url grande y encriptada de una oferta
+     * Genera una url pequeña y encriptada de una oferta
      *
      * @param string $url
      *
@@ -153,18 +155,6 @@ class ImageProxyService implements ImageProxyServiceInterface
     public function generateUrlOffersLarge(string $url): ?string
     {
         return $this->generateUrlImages($url, 'offers/large');
-    }
-
-    /**
-     * Genera una url a tamaño completo y encriptada de una oferta
-     *
-     * @param string $url
-     *
-     * @return string|null
-     */
-    public function generateUrlOffersFull(string $url): ?string
-    {
-        return $this->generateUrlImages($url, 'offers/full');
     }
 
     /**
@@ -193,11 +183,46 @@ class ImageProxyService implements ImageProxyServiceInterface
      */
     public function decrypt(string $value): ?string
     {
-        $key = substr(md5($key), 0, 16);
+        $key = substr(md5($this->hash), 0, 16);
         $iv = substr(md5($key . $key), 0, 16);
         $decrypted = @openssl_decrypt(@base64_decode($value), static::ENCRYPT_METHOD, $key, static::ENCRYPT_OPTIONS, $iv);
         $decrypted = @unserialize($decrypted) ?: null;
 
         return $decrypted;
+    }
+
+    /**
+     * Desencripta una cadena de texto y elimina la extensión
+     *
+     * @param string $value
+     *
+     * @return string|null
+     */
+    public function decryptAndRemoveExtension(string $value): ?string
+    {
+        $uri = Http::createFromString($value);
+        $hierarchicalPath = new HierarchicalPath($uri->getPath());
+
+        if ($hierarchicalPath->getExtension()) {
+            $value = str_replace('.' . $hierarchicalPath->getExtension(), '', $value);
+        }
+
+        return $this->decrypt($value);
+    }
+
+    /**
+     * Elimina de una url el prefijo https por el de ssl:
+     *
+     * @param string $url;
+     *
+     * @return string
+     */
+    private function normalizeScheme(string $url): string
+    {
+        if (strpos($url, 'https:') === 0) {
+            return 'ssl:' . ltrim(substr($url, 8), '/');
+        }
+
+        return $url;
     }
 }
