@@ -92,6 +92,38 @@ class ImageProxyService implements ImageProxyServiceInterface
     }
 
     /**
+     * Genera una url encriptada con el path media para redimensionar
+     *
+     * @param string $url
+     * @param int $width
+     * @param int $height
+     *
+     * @return string|null
+     */
+    public function generateUrlMedia(string $url, int $width, int $height): ?string
+    {
+        if (empty($url) || empty($this->urlBase)) {
+            return null;
+        }
+
+        $uri = Http::createFromString($url);
+        $hierarchicalPath = new HierarchicalPath($uri->getPath());
+        $url = $this->normalizeScheme($url);
+        $pathParams = '';
+
+        $url = sprintf(
+            '%s/media/%d/%d/%s.%s',
+            rtrim($this->urlBase, '/'),
+            $width,
+            $height,
+            urlencode($this->encrypt($url)),
+            $hierarchicalPath->getExtension() ? $hierarchicalPath->getExtension() : 'png'
+        );
+
+        return $url;
+    }
+
+    /**
      * Genera una url encriptada con un path
      *
      * @param string $url
