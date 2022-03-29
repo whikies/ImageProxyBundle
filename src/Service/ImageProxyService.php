@@ -265,6 +265,8 @@ class ImageProxyService implements ImageProxyServiceInterface
     {
         if (strpos($url, 'https:') === 0) {
             return 'ssl:' . ltrim(substr($url, 8), '/');
+        } elseif (strpos($url, 'http:') === 0) {
+            return ltrim(substr($url, 7), '/');
         }
 
         return $url;
