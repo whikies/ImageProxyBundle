@@ -128,7 +128,7 @@ class ImageProxyService implements ImageProxyServiceInterface
             $width,
             $height,
             urlencode($this->encrypt($url)),
-            $hierarchicalPath->getExtension() ? $hierarchicalPath->getExtension() : 'png'
+            $hierarchicalPath->getExtension() && in_array(strtolower($hierarchicalPath->getExtension()), $this->extensions) ? $hierarchicalPath->getExtension() : 'png'
         );
 
         return $url;
@@ -158,7 +158,7 @@ class ImageProxyService implements ImageProxyServiceInterface
             rtrim($this->urlBase, '/'),
             $path ? $path . '/' : '',
             urlencode($this->encrypt($url)),
-            $hierarchicalPath->getExtension() ? $hierarchicalPath->getExtension() : 'png'
+            $hierarchicalPath->getExtension() && in_array(strtolower($hierarchicalPath->getExtension()), $this->extensions) ? $hierarchicalPath->getExtension() : 'png'
         );
 
         return $url;
