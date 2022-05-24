@@ -22,6 +22,17 @@ class ImageProxyService implements ImageProxyServiceInterface
     private string $hash;
 
     /**
+     * @var array
+     */
+    private array $extensions = [
+        'jpg',
+        'jpeg',
+        'gif',
+        'png',
+        'bmp'
+    ];
+
+    /**
      * @param string $urlBase
      * @param string $hash
      */
@@ -80,7 +91,7 @@ class ImageProxyService implements ImageProxyServiceInterface
             '%s/img/%s.%s',
             rtrim($this->urlBase, '/'),
             urlencode($this->encrypt($url)),
-            $hierarchicalPath->getExtension() ? $hierarchicalPath->getExtension() : 'png'
+            $hierarchicalPath->getExtension() && in_array(strtolower($hierarchicalPath->getExtension()), $this->extensions) ? $hierarchicalPath->getExtension() : 'png'
         );
 
         if ($params) {
