@@ -7,7 +7,7 @@ use Twig\TwigFilter;
 
 class Extension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('image_proxy_basic_url', [Runtime::class, 'imageProxyBasicUrl']),
