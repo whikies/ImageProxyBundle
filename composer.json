@@ -18,7 +18,7 @@
     "name": "rjd/image-proxy-bundle",
     "require": {
         "league/uri": "^7.3",
-        "league/uri-components": "^7.5"
+        "league/uri-components": "7.5.0"
     },
     "type": "symfony-bundle"
 }
