@@ -17,8 +17,8 @@
     "license": "MIT",
     "name": "rjd/image-proxy-bundle",
     "require": {
-        "league/uri": "^6.4",
-        "league/uri-components": "^2.4"
+        "league/uri": "^7.3",
+        "league/uri-components": "^7.5"
     },
     "type": "symfony-bundle"
 }

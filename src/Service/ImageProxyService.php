@@ -83,7 +83,7 @@ class ImageProxyService implements ImageProxyServiceInterface
             return null;
         }
 
-        $uri = Http::createFromString($url);
+        $uri = Http::new($url);
         $hierarchicalPath = new HierarchicalPath($uri->getPath());
         $url = $this->normalizeScheme($url);
 
@@ -117,7 +117,7 @@ class ImageProxyService implements ImageProxyServiceInterface
             return null;
         }
 
-        $uri = Http::createFromString($url);
+        $uri = Http::new($url);
         $hierarchicalPath = new HierarchicalPath($uri->getPath());
         $url = $this->normalizeScheme($url);
         $pathParams = '';
@@ -148,7 +148,7 @@ class ImageProxyService implements ImageProxyServiceInterface
             return null;
         }
 
-        $uri = Http::createFromString($url);
+        $uri = Http::new($url);
         $hierarchicalPath = new HierarchicalPath($uri->getPath());
         $url = $this->normalizeScheme($url);
         $pathParams = '';
@@ -255,7 +255,7 @@ class ImageProxyService implements ImageProxyServiceInterface
      */
     public function decryptAndRemoveExtension(string $value): ?string
     {
-        $uri = Http::createFromString($value);
+        $uri = Http::new($value);
         $hierarchicalPath = new HierarchicalPath($uri->getPath());
 
         if ($hierarchicalPath->getExtension()) {
